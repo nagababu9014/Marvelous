@@ -17,6 +17,44 @@ jobs:
           echo "HOST=${{ secrets.VPS_HOST }}"
           echo "PORT=${{ secrets.VPS_PORT }}"
           echo "USER=${{ secrets.VPS_USER }}"
+      - name: Verify secrets exist
+        run: |
+          [ -z "${{ secrets.VPS_HOST }}" ] && echo "❌ VPS_HOST empty" || echo "✅ VPS_HOST present"
+          [ -z "${{ secrets.VPS_USER }}" ] && echo "❌ VPS_USER empty" || echo "✅ VPS_USER present"
+          [ -z "${{ secrets.VPS_PORT }}" ] && echo "❌ VPS_PORT empty" || echo "✅ VPS_PORT present"
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p ${{ secrets.VPS_PORT }} ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+
+name: Deploy Marvelous Backend
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Debug secrets
+        run: |
+          echo "HOST=${{ secrets.VPS_HOST }}"
+          echo "PORT=${{ secrets.VPS_PORT }}"
+          echo "USER=${{ secrets.VPS_USER }}"
+      - name: Verify secrets exist
+        run: |
+          [ -z "${{ secrets.VPS_HOST }}" ] && echo "❌ VPS_HOST empty" || echo "✅ VPS_HOST present"
+          [ -z "${{ secrets.VPS_USER }}" ] && echo "❌ VPS_USER empty" || echo "✅ VPS_USER present"
+          [ -z "${{ secrets.VPS_PORT }}" ] && echo "❌ VPS_PORT empty" || echo "✅ VPS_PORT present"
+
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
