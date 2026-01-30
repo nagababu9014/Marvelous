@@ -14,7 +14,7 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+from decouple import config
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-r&+x9qj%!0)=n4mwmb1enp%+1$ya$v-#(+t7acc9bdht4^4uco
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost","127.0.0.1",]
+ALLOWED_HOSTS = ["api.marvelousmart.com","localhost","127.0.0.1",'103.168.19.27']
 GOOGLE_CLIENT_ID ="887094962913-7h033et7vp0blp05ncdecc8e21jc0lg4.apps.googleusercontent.com"
 
 
@@ -78,7 +78,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 
@@ -181,6 +181,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = "static/"
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+
 JAZZMIN_SETTINGS = {
     "site_title": "Marvelous Mart",
     "site_header": "Marvelous Mart Dashboard",
@@ -216,6 +220,8 @@ CSRF_FAILURE_VIEW = "django.views.csrf.csrf_failure"
 
 
 
+STRIPE_PUBLISHABLE_KEY = "pk_test_51SsR3cFIKFyXSwGoCA0StO2QKH1tHBnix6uQ4w8FPq5p3tcAeNrXdErwNlYoWs9bVO8kNvy9sidKBA2G6KO6a08R00xwEleTEk"
+STRIPE_WEBHOOK_SECRET="whsec_c982003227aa393e041063c4353f055fdf0e3166cb63d19979665cb7e4e1fa6c"
 
 
 
@@ -227,7 +233,8 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 EMAIL_HOST_USER = "marvelous.mart2025@gmail.com"
-EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
+EMAIL_HOST_PASSWORD ="kzaq ezqa rtmq rbnx"
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 ADMIN_EMAIL = "2301600196mca@gmail.com"  # 👈 add this
+
