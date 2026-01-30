@@ -47,33 +47,24 @@ jobs:
           echo "Connecting to $VPS_USER@$VPS_HOST on port $VPS_PORT"
 
           ssh -i ~/.ssh/id_ed25519 \
-              -o StrictHostKeyChecking=no \
-              -p "$VPS_PORT" \
-              "$VPS_USER@$VPS_HOST" << EOF
-set -e
-
-cd /var/www/marvelous/Marvelous
-
-echo "Pulling latest code..."
-git pull origin main
-
-echo "Activating virtualenv..."
-source venv/bin/activate
-
-echo "Installing requirements..."
-pip install -r requirements.txt
-
-echo "Running migrations..."
-python manage.py migrate
-
-echo "Collecting static files..."
-python manage.py collectstatic --noinput
-
-echo "Restarting Gunicorn..."
-systemctl restart marvelous
-
-echo "Reloading Nginx..."
-systemctl reload nginx
-
-echo "✅ Deployment successful"
-EOF
+            -o StrictHostKeyChecking=no \
+            -p "$VPS_PORT" \
+            "$VPS_USER@$VPS_HOST" "
+              set -e
+              cd /var/www/marvelous/Marvelous
+              echo 'Pulling latest code...'
+              git pull origin main
+              echo 'Activating virtualenv...'
+              source venv/bin/activate
+              echo 'Installing requirements...'
+              pip install -r requirements.txt
+              echo 'Running migrations...'
+              python manage.py migrate
+              echo 'Collecting static files...'
+              python manage.py collectstatic --noinput
+              echo 'Restarting Gunicorn...'
+              systemctl restart marvelous
+              echo 'Reloading Nginx...'
+              systemctl reload nginx
+              echo '✅ Deployment successful'
+            "
