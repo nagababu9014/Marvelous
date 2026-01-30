@@ -84,7 +84,7 @@ MIDDLEWARE = [
 
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
+    "https://www.marvelousmart.com",
 ]
 
 from corsheaders.defaults import default_headers
@@ -182,10 +182,10 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 JAZZMIN_SETTINGS = {
-    "site_title": "E-Commerce Admin",
-    "site_header": "E-Commerce Dashboard",
-    "site_brand": "E-Commerce",
-    "welcome_sign": "Welcome to E-Commerce Admin",
+    "site_title": "Marvelous Mart",
+    "site_header": "Marvelous Mart Dashboard",
+    "site_brand": "Marvelous Mart",
+    "welcome_sign": "Welcome to Marvelous Mart Admin",
     "search_model": ["products.Product", "orders.Order"],
     "topmenu_links": [
         {"name": "Home", "url": "admin:index"},
