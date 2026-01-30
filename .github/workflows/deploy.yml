@@ -31,11 +31,17 @@ jobs:
           ssh-keyscan -p ${{ secrets.VPS_PORT }} ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
 
       - name: Deploy to VPS
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_PORT: ${{ secrets.VPS_PORT }}
+          VPS_USER: ${{ secrets.VPS_USER }}
         run: |
+          echo "Connecting to $VPS_USER@$VPS_HOST on port $VPS_PORT"
+
           ssh -i ~/.ssh/id_ed25519 \
               -o StrictHostKeyChecking=no \
-              -p ${{ secrets.VPS_PORT }} \
-              ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
+              -p "$VPS_PORT" \
+              "$VPS_USER@$VPS_HOST" << 'EOF'
           set -e
 
           cd /var/www/marvelous/Marvelous
