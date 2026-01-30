@@ -1,4 +1,4 @@
-name: Deploy Marvelous Backend
+name: Deploy Marvelous Backends
 
 on:
   push:
