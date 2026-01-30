@@ -12,7 +12,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
+      - name: Debug SSH values
+        run: |
+            echo "HOST=${{ secrets.SSH_HOST }}"
+            echo "PORT=${{ secrets.SSH_PORT }}"
+            echo "USER=${{ secrets.SSH_USER }}"
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
@@ -46,6 +50,6 @@ jobs:
 
           echo "Reloading Nginx..."
           systemctl reload nginx
-          
+
           echo "✅ Deployment successful"
           EOF
