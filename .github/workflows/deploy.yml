@@ -12,11 +12,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Debug SSH values
+      - name: Debug secrets
         run: |
-            echo "HOST=${{ secrets.SSH_HOST }}"
-            echo "PORT=${{ secrets.SSH_PORT }}"
-            echo "USER=${{ secrets.SSH_USER }}"
+          echo "HOST=${{ secrets.VPS_HOST }}"
+          echo "PORT=${{ secrets.VPS_PORT }}"
+          echo "USER=${{ secrets.VPS_USER }}"
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
