@@ -19,13 +19,12 @@ class CreateStripePaymentIntent(APIView):
             return Response({"error": "Order not found"}, status=404)
 
         intent = stripe.PaymentIntent.create(
-            amount=int(order.total_amount * 100),  # smallest unit
-            currency="inr",
+            amount=int(order.total_amount * 100),  # cents
+            currency="usd",
             metadata={
-                "order_id": str(order.id)  # 🔥 MUST be string
+                "order_id": order.id
             }
         )
-
 
         return Response({
             "client_secret": intent.client_secret
