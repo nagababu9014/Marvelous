@@ -191,17 +191,30 @@ JAZZMIN_SETTINGS = {
     "site_brand": "Marvelous Mart",
     "welcome_sign": "Welcome to Marvelous Mart Admin",
     "search_model": ["products.Product", "orders.Order"],
+
+    # 🔥 Change here
+    "changeform_format": "horizontal_tabs",
+
+    "show_ui_builder": False,
+
     "topmenu_links": [
         {"name": "Home", "url": "admin:index"},
     ],
+
     "icons": {
         "products.Product": "fas fa-box",
         "products.Category": "fas fa-list",
+        "products.SubCategory": "fas fa-tags",
+        "products.ProductImage": "fas fa-image",
         "banners.Banner": "fas fa-image",
         "orders.Order": "fas fa-shopping-cart",
         "auth.User": "fas fa-user",
     },
+
+    
 }
+
+
 from datetime import timedelta
 
 SIMPLE_JWT = {
