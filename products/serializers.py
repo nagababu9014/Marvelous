@@ -14,12 +14,22 @@ class SubCategorySerializer(serializers.ModelSerializer):
         fields = ["id", "name", "slug", "category", "category_name"]
 
 
+from rest_framework import serializers
+from .models import Category, SubCategory, Product, ProductImage
+
+
+class ProductImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductImage
+        fields = ["image"]
+
+
 class ProductSerializer(serializers.ModelSerializer):
     category_name = serializers.CharField(source="category.name", read_only=True)
-    subcategory_name = serializers.CharField(
-        source="subcategory.name",
-        read_only=True
-    )
+    subcategory_name = serializers.CharField(source="subcategory.name", read_only=True)
+
+    # ✅ Multiple images field
+    images = ProductImageSerializer(many=True, read_only=True)
 
     class Meta:
         model = Product
@@ -28,11 +38,12 @@ class ProductSerializer(serializers.ModelSerializer):
             "name",
             "price",
             "description",
-            "image",
+            # ❌ REMOVE "image"
             "stock",
             "is_active",
             "category",
             "subcategory",
             "category_name",
             "subcategory_name",
+            "images",   # ✅ Add this
         ]
