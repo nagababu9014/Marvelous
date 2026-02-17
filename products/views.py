@@ -68,15 +68,20 @@ class ProductSearchAPIView(APIView):
             return Response([])
 
         products = Product.objects.filter(
-            name__icontains=q
-        )[:8]  # limit results like Amazon
+            name__icontains=q,
+            is_active=True
+        )[:8]
 
-        return Response([
-            {
+        result = []
+
+        for p in products:
+            first_image = p.images.first()  # related_name="images"
+
+            result.append({
                 "id": p.id,
                 "name": p.name,
-                "image": p.image.url if p.image else "",
+                "image": first_image.image.url if first_image else "",
                 "price": p.price
-            }
-            for p in products
-        ])
+            })
+
+        return Response(result)
