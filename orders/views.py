@@ -99,7 +99,7 @@ class CreateOrderAPIView(APIView):
         )
 
         # ✅ Get state tax rate
-        state_code = address.state.strip().upper()
+        state_code = (address.state or "").strip().upper()
         tax_rate = US_STATE_TAX_RATES.get(state_code, Decimal("0.05"))  # default 5%
 
         tax_amount = (subtotal * tax_rate).quantize(Decimal("0.01"))
@@ -127,19 +127,14 @@ class CreateOrderAPIView(APIView):
 
         for item in items:
             image_url = ""
-            if item.product.image:
-                image_url = (
-                    f"{request_scheme}://{request_host}"
-                    f"{item.product.image.url}"
+
+            first_image = item.product.images.first()
+
+            if first_image and first_image.image:
+                image_url = request.build_absolute_uri(
+                    first_image.image.url
                 )
 
-            OrderItem.objects.create(
-                order=order,
-                product_name=item.product.name,
-                product_image=image_url,
-                price=item.product.price,
-                quantity=item.quantity
-            )
             OrderItem.objects.create(
                 order=order,
                 product_name=item.product.name,
