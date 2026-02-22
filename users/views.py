@@ -17,25 +17,35 @@ from google.auth.transport import requests as google_requests
 from django.conf import settings
 
 
+
+
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
+from rest_framework import status
+from .serializers import SignupSerializer
+
+
 class SignupView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
         serializer = SignupSerializer(data=request.data)
+
         if serializer.is_valid():
             serializer.save()
-            return Response({"message": "User created"}, status=201)
+            return Response(
+                {"message": "User created successfully"},
+                status=status.HTTP_201_CREATED
+            )
 
         return Response(serializer.errors, status=400)
-
-
-
-
 class LoginView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        username = request.data.get("username")
+        username = request.data.get("email")
         password = request.data.get("password")
 
         user = authenticate(username=username, password=password)
@@ -89,9 +99,10 @@ class MeAPIView(APIView):
         return Response({
             "id": user.id,
             "email": user.email,
-            "username": user.username,
-        })
-
+            "username": user.username,  # keep old
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+        })  
 
 class GoogleLoginAPIView(APIView):
     permission_classes = [AllowAny]

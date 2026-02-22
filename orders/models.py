@@ -13,13 +13,17 @@ from django.contrib.auth.models import User
 
 class Address(models.Model):
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="addresses",
+        User,
+        on_delete=models.CASCADE,
+        related_name="addresses",
         null=True,
         blank=True
     )
 
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
+
+    email = models.EmailField(null=True, blank=True)
     phone = models.CharField(max_length=20)
 
     address_line1 = models.CharField(max_length=255)
@@ -94,6 +98,7 @@ class Order(models.Model):
     )
 
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    tax_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # ✅ ADD
 
     payment_status = models.CharField(
         max_length=20,
