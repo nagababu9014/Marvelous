@@ -42,7 +42,7 @@ class SignupView(APIView):
 
         return Response(serializer.errors, status=400)
 class LoginView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [AllowAny] 
 
     def post(self, request):
         # 🔥 Accept both email and username safely
@@ -99,14 +99,29 @@ class MeAPIView(APIView):
 
     def get(self, request):
         user = request.user
+
+        addresses = user.addresses.all().values(
+            "id",
+            "first_name",
+            "last_name",
+            "email",
+            "phone",
+            "address_line1",
+            "address_line2",
+            "city",
+            "state",
+            "zip_code",
+            "country",
+        )
+
         return Response({
             "id": user.id,
             "email": user.email,
-            "username": user.username,  # keep old
+            "username": user.username,
             "first_name": user.first_name,
             "last_name": user.last_name,
-        })  
-
+            "addresses": list(addresses),
+        })
 class GoogleLoginAPIView(APIView):
     permission_classes = [AllowAny]
 
