@@ -45,14 +45,18 @@ class LoginView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        username = request.data.get("email")
+        # 🔥 Accept both email and username safely
+        username = request.data.get("username") or request.data.get("email")
         password = request.data.get("password")
 
+        if not username or not password:
+            return Response({"error": "Username and password required"}, status=400)
+
         user = authenticate(username=username, password=password)
+
         if not user:
             return Response({"error": "Invalid credentials"}, status=401)
 
-        # 🔥 MERGE GUEST CART → USER CART
         guest_id = request.headers.get("X-GUEST-ID")
         if guest_id:
             merge_guest_cart_to_user(guest_id, user)
@@ -68,7 +72,6 @@ class LoginView(APIView):
                 "email": user.email,
             }
         })
-
 
 
 
