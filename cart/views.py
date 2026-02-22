@@ -137,9 +137,7 @@ class CheckoutAPIView(APIView):
             })
 
         items = CartItem.objects.filter(cart=cart)
-        image_url = ""
-        if item.product.image:
-            image_url = request.build_absolute_uri(item.product.image.url)
+
 
         subtotal = Decimal("0.00")
         data = []
@@ -147,6 +145,11 @@ class CheckoutAPIView(APIView):
         for item in items:
             item_subtotal = item.product.price * item.quantity
             subtotal += item_subtotal
+            image_url = ""
+            if item.product.image and hasattr(item.product.image, "url"):
+                image_url = request.build_absolute_uri(
+                item.product.image.url
+                )
 
             data.append({
                 "product": item.product.name,
