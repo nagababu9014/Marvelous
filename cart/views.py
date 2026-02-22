@@ -137,6 +137,9 @@ class CheckoutAPIView(APIView):
             })
 
         items = CartItem.objects.filter(cart=cart)
+        image_url = ""
+        if item.product.image:
+            image_url = request.build_absolute_uri(item.product.image.url)
 
         subtotal = Decimal("0.00")
         data = []
@@ -149,7 +152,9 @@ class CheckoutAPIView(APIView):
                 "product": item.product.name,
                 "price": item.product.price,
                 "quantity": item.quantity,
-                "subtotal": item_subtotal
+                "subtotal": item_subtotal,
+                "image": image_url   # 🔥 ADD THIS
+
             })
 
         # 🔥 TAX PREVIEW LOGIC
