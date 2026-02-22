@@ -140,6 +140,13 @@ class CreateOrderAPIView(APIView):
                 price=item.product.price,
                 quantity=item.quantity
             )
+            OrderItem.objects.create(
+                order=order,
+                product_name=item.product.name,
+                product_image=image_url,
+                price=item.product.price,
+                quantity=item.quantity
+            )
 
         return Response({
             "order_id": order.id,
