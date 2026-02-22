@@ -6,9 +6,8 @@ from rest_framework.generics import ListAPIView
 from cart.models import CartItem
 from cart.serializers import CartItemSerializer
 from cart.utils import get_cart
-
-
-# -----------------------------
+from orders.models import Address
+from orders.views import US_STATE_TAX_RATES# -----------------------------
 # ADD TO CART
 # -----------------------------
 class AddToCartAPIView(APIView):
@@ -114,11 +113,13 @@ class RemoveCartItemAPIView(APIView):
 # -----------------------------
 # CHECKOUT (USER ONLY)
 # -----------------------------
+from decimal import Decimal
+
 class CheckoutAPIView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
-        # 🔒 Only logged-in users can checkout
+
         if not request.user.is_authenticated:
             return Response(
                 {"error": "Login required"},
@@ -128,24 +129,48 @@ class CheckoutAPIView(APIView):
         cart = get_cart(user=request.user)
 
         if not cart:
-            return Response({"items": [], "total_amount": 0})
+            return Response({
+                "items": [],
+                "subtotal": 0,
+                "tax_amount": 0,
+                "total_amount": 0
+            })
 
         items = CartItem.objects.filter(cart=cart)
 
-        total = 0
+        subtotal = Decimal("0.00")
         data = []
 
         for item in items:
-            subtotal = item.product.price * item.quantity
-            total += subtotal
+            item_subtotal = item.product.price * item.quantity
+            subtotal += item_subtotal
+
             data.append({
                 "product": item.product.name,
                 "price": item.product.price,
                 "quantity": item.quantity,
-                "subtotal": subtotal
+                "subtotal": item_subtotal
             })
+
+        # 🔥 TAX PREVIEW LOGIC
+        # If user has saved address → use its state
+        address = Address.objects.filter(user=request.user).first()
+
+        if address:
+            state_code = address.state.strip().upper()
+            tax_rate = US_STATE_TAX_RATES.get(
+                state_code,
+                Decimal("0.05")
+            )
+        else:
+            tax_rate = Decimal("0.05")  # default preview tax
+
+        tax_amount = (subtotal * tax_rate).quantize(Decimal("0.01"))
+        total_amount = (subtotal + tax_amount).quantize(Decimal("0.01"))
 
         return Response({
             "items": data,
-            "total_amount": total
+            "subtotal": subtotal,
+            "tax_amount": tax_amount,
+            "total_amount": total_amount
         })
