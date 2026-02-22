@@ -146,9 +146,12 @@ class CheckoutAPIView(APIView):
             item_subtotal = item.product.price * item.quantity
             subtotal += item_subtotal
             image_url = ""
-            if item.product.image and hasattr(item.product.image, "url"):
+
+            first_image = item.product.images.first()
+
+            if first_image and first_image.image:
                 image_url = request.build_absolute_uri(
-                item.product.image.url
+                    first_image.image.url
                 )
 
             data.append({
