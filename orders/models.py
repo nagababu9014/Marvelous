@@ -9,8 +9,11 @@ from django.contrib.auth.models import User
 # orders/models.py
 from django.db import models
 from django.contrib.auth.models import User
+from products.models import Product  # adjust import path
+import random
 
-
+def generate_order_number():
+    return random.randint(100000000, 999999999)
 class Address(models.Model):
     user = models.ForeignKey(
         User,
@@ -86,6 +89,7 @@ class Order(models.Model):
         on_delete=models.PROTECT,
         null=True, blank=True
     )
+
     session_key = models.CharField(
         max_length=40,
         null=True,
@@ -96,7 +100,20 @@ class Order(models.Model):
         unique=True,
         editable=False
     )
+    order_number = models.BigIntegerField(
+        unique=True,
+        null=True,
+        blank=True
+    )
 
+    def save(self, *args, **kwargs):
+        if not self.order_number:
+            while True:
+                number = random.randint(100000000, 999999999)
+                if not Order.objects.filter(order_number=number).exists():
+                    self.order_number = number
+                    break
+        super().save(*args, **kwargs)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
     tax_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # ✅ ADD
 
@@ -124,7 +141,12 @@ class OrderItem(models.Model):
         on_delete=models.CASCADE,
         related_name="items"
     )
-
+    product = models.ForeignKey(   # 👈 ADD THIS
+        Product,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
     product_name = models.CharField(max_length=255)
     product_image = models.URLField()   # snapshot image URL
     price = models.DecimalField(max_digits=10, decimal_places=2)
