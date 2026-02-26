@@ -137,6 +137,7 @@ class CreateOrderAPIView(APIView):
 
             OrderItem.objects.create(
                 order=order,
+                product=item.product,  # 👈 ADD THIS
                 product_name=item.product.name,
                 product_image=image_url,
                 price=item.product.price,
@@ -145,6 +146,8 @@ class CreateOrderAPIView(APIView):
 
         return Response({
             "order_id": order.id,
+                "order_number": order.order_number,   # ✅ ADD THIS
+
             "order_token": str(order.public_token),
             "subtotal": subtotal,
             "tax_amount": tax_amount,
@@ -216,6 +219,7 @@ class MyOrdersAPIView(APIView):
         return Response([
             {
                 "id": o.id,
+                "order_number": o.order_number,   # ADD THIS
                 "order_token": str(o.public_token),
                 "total_amount": o.total_amount,
                 "payment_status": o.payment_status,
@@ -223,7 +227,7 @@ class MyOrdersAPIView(APIView):
                 "created_at": o.created_at,
 
                 "items": [
-                    {
+                    {    "product_id": i.product.id if i.product else None,
                         "name": i.product_name,
                         "image": i.product_image,
                         "price": i.price,
